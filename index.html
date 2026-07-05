@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>image search engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="auth-box">
+
+                    <a href="#">Log In</a>
+
+                    <div class="divider"></div>
+
+                    <a href="#">Sign Up</a>
+                </div>
+
+                <div class="hamburger">
+
+                    <span></span>
+
+                    <span></span>
+
+                    <span></span>
+                </div>
+        </div>
+
+        </div>
+        </nav>
+
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>IMAGE SEARCH ENGINE</h1>
+                <form class="search-box">
+                    <input type="text" placeholder="search anything here...">
+
+                    <button type="submit">search</button>
+
+                </form>
+            </div>
+
+        </section>
+        <section class="categories">
+            <div class="category-card" data-category="animals">
+                <img src="images/animals.jpg" alt="">
+                <h3>Animals</h3>
+            </div>
+            <div class="category-card" data-category="humans">
+                <img src="images/humans.jpg" alt="">
+                <h3>Humans</h3>
+            </div>
+            <div class="category-card" data-category="natures">
+                <img src="images/natures.jpg" alt="">
+                <h3>Nature</h3>
+            </div>
+            <div class="category-card" data-category="arts">
+                <img src="images/arts.jpg" alt="">
+                <h3>Arts</h3>
+            </div>
+            <div class="category-card" data-category="technology">
+                <img src="images/technology.jpg" alt="">
+                <h3>Technology</h3>
+            </div>
+            <div class="category-card" data-category="cars">
+                <img src="images/cars.jpg" alt="">
+                <h3>Cars</h3>
+            </div>
+        </section>
+
+        <section class="gallery">
+        </section>
+
+        <button class="load-more">
+            load more
+        </button>
+    </main>
+    <script>
+
+        // ==========================
+        // Pexels API
+        // ==========================
+
+        const API_KEY = ; // API Key خودت را اینجا قرار بده
+
+        // ==========================
+        // Elements
+        // ==========================
+
+        const gallery = document.querySelector(".gallery");
+        const searchInput = document.querySelector(".search-box input");
+        const form = document.querySelector(".search-box");
+        const categoryCards = document.querySelectorAll(".category-card");
+        const loadMore = document.querySelector(".load-more");
+        const categories = document.querySelector(".categories");
+
+        // ==========================
+        // Variables
+        // ==========================
+
+        let currentQuery = "";
+        let currentPage = 1;
+
+        // ==========================
+        // Search Images
+        // ==========================
+
+        async function searchImages(query, page = 1) {
+
+            currentQuery = query;
+
+            try {
+
+                const response = await fetch(
+                    `https://api.pexels.com/v1/search?query=${query}&per_page=12&page=${page}`,
+                    {
+                        headers: {
+                            Authorization: API_KEY
+                        }
+                    }
+                );
+
+                const data = await response.json();
+
+                if (data.photos.length === 0) {
+
+                    gallery.innerHTML = `
+                <h2 style="color:white;text-align:center;">
+                    No Images Found
+                </h2>
+            `;
+
+                    return;
+                }
+
+                displayImages(data.photos, page);
+
+                // مخفی شدن دسته بندی ها بعد از جستجو
+                categories.style.display = "none";
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                gallery.innerHTML = `
+            <h2 style="color:white;text-align:center;">
+                Something went wrong!
+            </h2>
+        `;
+
+            }
+
+        }
+
+        // ==========================
+        // Display Images
+        // ==========================
+
+        function displayImages(images, page) {
+
+            if (page === 1) {
+
+                gallery.innerHTML = "";
+
+            }
+
+            images.forEach(image => {
+
+                const card = document.createElement("div");
+
+                card.className = "image-card";
+
+                card.innerHTML = `
+
+            <img src="${image.src.medium}" alt="${image.alt}">
+
+            <div class="image-info">
+
+                <p>${image.photographer}</p>
+
+            </div>
+
+        `;
+
+                gallery.appendChild(card);
+
+            });
+
+        }
+
+        // ==========================
+        // Search Form
+        // ==========================
+
+        form.addEventListener("submit", (e) => {
+
+            e.preventDefault();
+
+            const query = searchInput.value.trim();
+
+            if (query === "") return;
+
+            currentPage = 1;
+
+            searchImages(query);
+
+        });
+
+        // ==========================
+        // Category Cards
+        // ==========================
+
+        categoryCards.forEach(card => {
+
+            card.addEventListener("click", () => {
+
+                currentPage = 1;
+
+                const category = card.dataset.category;
+
+                searchInput.value = category;
+
+                searchImages(category);
+
+            });
+
+        });
+
+        // ==========================
+        // Load More
+        // ==========================
+
+        if (loadMore) {
+
+            loadMore.addEventListener("click", () => {
+
+                currentPage++;
+
+                searchImages(currentQuery, currentPage);
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
