@@ -85,16 +85,11 @@
     </main>
     <script>
 
-        // ==========================
-        // Pexels API
-        // ==========================
+      
 
         const API_KEY = "uKMUAuqTw4urnaJ8pslUgXnYGCBeDSPMPahkYmhw53u0OHyXrkJ1dOEU"; // API Key خودت را اینجا قرار بده
 
-        // ==========================
-        // Elements
-        // ==========================
-
+        
         const gallery = document.querySelector(".gallery");
         const searchInput = document.querySelector(".search-box input");
         const form = document.querySelector(".search-box");
@@ -102,16 +97,10 @@
         const loadMore = document.querySelector(".load-more");
         const categories = document.querySelector(".categories");
 
-        // ==========================
-        // Variables
-        // ==========================
-
         let currentQuery = "";
         let currentPage = 1;
 
-        // ==========================
-        // Search Images
-        // ==========================
+        
 
         async function searchImages(query, page = 1) {
 
@@ -162,9 +151,7 @@
 
         }
 
-        // ==========================
-        // Display Images
-        // ==========================
+       
 
         function displayImages(images, page) {
 
@@ -216,9 +203,7 @@
 
         });
 
-        // ==========================
-        // Category Cards
-        // ==========================
+        
 
         categoryCards.forEach(card => {
 
@@ -236,9 +221,7 @@
 
         });
 
-        // ==========================
-        // Load More
-        // ==========================
+       
 
         if (loadMore) {
 
